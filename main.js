@@ -6,26 +6,24 @@ const root = document.getElementById('root');
 
 const button = document.createElement('button');
 
-button.textContent='appuye moi';
-
+button.textContent='Cocktail';
 root.appendChild(button);
 
 
 const fetchRandomDrink = async () => {
     const responseCocktail = await fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
-    return await responseCocktail.json();
+    const jsonCocktail = await responseCocktail.json();
+
+    return jsonCocktail.drinks[0];
 }
 
-button.addEventListener("click", async() =>{
-    const response = await fetchRandomDrink();
-    const randomDrink =response.drinks[0];
-    const h1 = document.createElement('h1');
-    h1.innerHTML = randomDrink.strDrink;
-    const h2 = document.createElement('h2');
-    h2.innerHTML = randomDrink.strCategory;
-    const pInst= document.createElement('p');
-    pInst.innerHTML = randomDrink.strInstructions;
+function clearContainer(){
+    root.innerHTML ="";
+}
+
+function createUl(randomDrink){
     const pIngr = document.createElement('ul');
+
     for (let i = 0; i < 15; i++) {
         const ingredient = randomDrink[`strIngredient${i}`];
         if (ingredient) {
@@ -34,47 +32,36 @@ button.addEventListener("click", async() =>{
             pIngr.appendChild(ingredientItem);
         }
     }
+
+    root.appendChild(pIngr);
+}
+
+async function renderRandomCocktail(){
+    const randomDrink = await fetchRandomDrink();
+
+    const h1 = document.createElement('h1');
+    h1.innerHTML = randomDrink.strDrink;
+
+    const h2 = document.createElement('h2');
+    h2.innerHTML = randomDrink.strCategory;
+
+    const pInst= document.createElement('p');
+    pInst.innerHTML = randomDrink.strInstructions;
+
     const image = document.createElement("img");
     image.src= randomDrink.strDrinkThumb;
-    root.innerHTML ="";
+
     root.appendChild(button);
     root.appendChild(h1);
     root.appendChild(h2);
     root.appendChild(pInst);
-    root.appendChild(pIngr);
+    createUl(randomDrink);
     root.appendChild(image);
-})
+}
 
-
-//addEventListener permet d'attendre qu'un event arrive
-//await = assynchrome de malade =styléefunction 
-
-//const test2 =() => {}
-
-//fonction fléché
-// explicite mais vite ilisible
-// button.addEventListener('click',()=>{
-//     console.log('bouton cliqué')
-//     fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
-//         .then((response) => {
-//             return response.json()
-//         })
-//         .then((response) => {
-//             //console.log(JSON.stringify(response)) affiche le JSON
-//             const randomDrink =response.drinks[0];
-//             const h1= document.createElement('h1');
-//             h1.innerHTML = randomDrink.strDrink;
-//             root.appendChild(h1);
-//         })
-//         .catch(error=>{
-//             alert("Erreur : "+ error)
-//         });
-// });
-
-// promesse avec un status en attente/
-// async function getDrink()
-
-// const = constante let,var= changement sur le scope
-// let et const permet de crée plusieur mini valeur dans le scope
-//Const ou let
-//const root = document.querySelector('#root');
+//const button = createButton();
+//const container = createContainer();
+button.addEventListener('click',async() =>{
+    clearContainer();
+    await renderRandomCocktail();
+});

@@ -2,12 +2,35 @@ body {
   font-family: sans-serif;
 }
 
+div{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 button {
-  background-color: #f44336;
-  color: white;
-  padding: 10px 20px;
-  border: none;
+  min-width: 130px;
+  height: 40px;
+  color: #fff;
+  padding: 5px 10px;
+  font-weight: bold;
   cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 5px;
+  border: none;
+  background: #ff6392;
+  box-shadow: 0 5px #ff0a78;
+}
+button:hover {
+  box-shadow: 0 3px #ff0a78;
+  top: 1px;
+}
+button:active {
+  box-shadow: 0 0 #ff0a78;
+  top: 5px;
 }
 
 h1, h2 {
@@ -37,3 +60,4 @@ img {
   margin-top: 10px;
 
 }
+
