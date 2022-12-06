@@ -11,7 +11,6 @@ button.textContent='appuye moi';
 root.appendChild(button);
 
 
-
 const fetchRandomDrink = async () => {
     const responseCocktail = await fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
     return await responseCocktail.json();
