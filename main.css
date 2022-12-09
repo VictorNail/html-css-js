@@ -1,5 +1,9 @@
 body {
-  font-family: sans-serif;
+  font-family: "Times New Roman", serif;
+  background-color: #333;
+  margin: 0 auto;
+  max-width: 600px;
+  padding: 20px;
 }
 
 div{
@@ -36,17 +40,23 @@ button:active {
 h1, h2 {
   text-align: center;
   margin-bottom: 10px;
+  color: #ff6392;
+
 }
 
 p {
   margin: 0;
   text-align: center;
+  color: #ff6392;
+
 }
 
 ul {
   list-style: none;
   padding: 0;
   text-align: center;
+  color: #ff6392;
+
 }
 
 li {
