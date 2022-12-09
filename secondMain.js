@@ -2,49 +2,60 @@ console.log('hello sup de vinci');  // ligne de commande pour débug
 
 const root = document.getElementById('root');
 
-// créer un nouveau bouton
-// au clic sur ce bouton, faites un appel fetch https://www.thecocktaildb.com/api/json/v1/1/search.php?s=
-// affichez les résultats dans votre DOM
-// créez vos différentes fonctions dans une ou plusieurs classes
-// Si vous avez terminé, tentez de refactoriser votre classe en plusieurs classes
-// en utilisant le principe SRP de SOLID
-// https://www.freecodecamp.org/news/solid-principles-single-responsibility-principle-explained/
+
+
+class apiData{
+    constructor(api){
+        this.api=api;
+    }
+
+    async fetchDrink(){
+        const responseCocktail = await fetch(this.api)
+        const jsonCocktail = await responseCocktail.json();
+    
+        return jsonCocktail.drinks;
+    }
+}
 
 class cocktail{
-    //Crée des cocktail
+    constructor(drink){
+        this.h1 = document.createElement('h1');
+        this.h1.innerHTML = drink.strDrink;
 
-    constructor(nom,category,instruction,ingredient,image){
-        this.nom=nom;
-        this.category=category;
-        this.instruction=instruction;
-        this.ingredient=ingredient;
-        this.image=image;
-    }
+        this.h2 = document.createElement('h2');
+        this.h2.innerHTML = drink.strCategory;
 
-    getNom(){
-        return this.nom;
-    }
-    getCategory(){
-        return this.category;
-    }
-    getinstruction(){
-        return this.instruction;
-    }
-    getIngredient(){
-        return this.ingredient;
-    }
-    getImage(){
-        return this.image;
+        this.pInst= document.createElement('p');
+        this.pInst.innerHTML = drink.strInstructions;
+
+        this.image = document.createElement("img");
+        this.image.src= drink.strDrinkThumb;
+
+        this.pIngr = document.createElement('ul');
+        for (let i = 0; i < 15; i++) {
+            const ingredient = drink[`strIngredient${i}`];
+            if (ingredient) {
+                const ingredientItem = document.createElement("li");
+                ingredientItem.innerHTML = ingredient;
+                this.pIngr.appendChild(ingredientItem);
+            }
+        }
     }
 
+    getH1(){return this.h1}
+    getH2(){return this.h2}
+    getInst(){return this.pInst}
+    getIngr(){return this.pIngr}
+    getImg(){return this.image};
 }
 
 class buttonCocktail{
 
-
-    constructor(){
+    constructor(json){
         this.button = document.createElement('button');
         this.button.textContent='Afficher les cocktails';
+        this.json=json;
+        this.bool= Boolean(true);
         this.button.addEventListener('click',async() =>{
             this.clearContainer();
             await this.afficherCocktail();
@@ -58,59 +69,25 @@ class buttonCocktail{
         root.innerHTML ="";
     }
 
-    async fetchDrink(){
-        const responseCocktail = await fetch("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=")
-        const jsonCocktail = await responseCocktail.json();
-    
-        return jsonCocktail.drinks;
-        //return jsonCocktail.drinks[0];
-    }
-
-    createUl(randomDrink){
-        const pIngr = document.createElement('ul');
-    
-        for (let i = 0; i < 15; i++) {
-            const ingredient = randomDrink[`strIngredient${i}`];
-            if (ingredient) {
-                const ingredientItem = document.createElement("li");
-                ingredientItem.innerHTML = ingredient;
-                pIngr.appendChild(ingredientItem);
+    async afficherCocktail(){
+        root.appendChild(this.button);
+        if(this.bool){
+            const randomDrink = await this.json;
+            for (var i = 0; i < randomDrink.length; i++) {
+                const drinkChoice = new cocktail(randomDrink[i]);
+                root.appendChild(drinkChoice.getH1());
+                root.appendChild(drinkChoice.getH2());
+                root.appendChild(drinkChoice.getInst());
+                root.appendChild(drinkChoice.getIngr());
+                root.appendChild(drinkChoice.getImg());
             }
         }
-    
-        root.appendChild(pIngr);
-    }
-
-    async afficherCocktail(){
-        console.log('Btn');
-        //fonction qui affiche
-        //appelle une fonction qui crée des cocktail 
-        //affiche le tableau
-        const randomDrink = await this.fetchDrink();
-        root.appendChild(this.button);
-        for (var i = 0; i < randomDrink.length; i++) {
-            const h1 = document.createElement('h1');
-            h1.innerHTML = randomDrink[i].strDrink;
-
-            const h2 = document.createElement('h2');
-            h2.innerHTML = randomDrink[i].strCategory;
-
-            const pInst= document.createElement('p');
-            pInst.innerHTML = randomDrink[i].strInstructions;
-
-            const image = document.createElement("img");
-            image.src= randomDrink[i].strDrinkThumb;
-            root.appendChild(h1);
-            root.appendChild(h2);
-            root.appendChild(pInst);
-            this.createUl(randomDrink[i]);
-            root.appendChild(image);
-          }
+        this.bool = !this.bool;
     }
 }
 
-
-
 // Crée le bouton
-const button= new buttonCocktail();
+const api = new apiData("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=");
+const button= new buttonCocktail(api.fetchDrink());
 button.afficheButton();
+//division par 3 des classes
